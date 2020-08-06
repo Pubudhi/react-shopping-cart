@@ -10,9 +10,41 @@ class App extends React.Component {
     super();
     this.state = {
         products: data.products,
-        sizes: "",
+        size: "",
         sort: ""
     };
+  }
+
+  sortProducts = (event) => {
+    //TO-DO
+    const sort = event.target.value;
+    console.log(event.target.value);
+    this.setState((state) => ({
+      sort: sort,
+      products: this.state.products.slice().sort((a,b) => (
+        sort === "lowest"?
+        ((a.price > b.price)? 1: -1):
+        sort === "highest"?
+        ((a.price < b.price)? 1: -1):
+        ((a._id < b._id)? 1: -1)
+
+      ))
+    }))
+  }
+
+  filterProducts = (event) => {
+    //TO-DO
+    console.log(event.target.value);
+    if(event.target.value === ""){
+      this.setState({size: event.target.value, products: data.products})
+    } else{
+      this.setState({
+        size: event.target.value,
+        products: data.products.filter(product => product.availableSizes.indexOf(event.target.value) >= 0)
+  
+      })
+    }
+    
   }
 
   render() {
@@ -24,7 +56,12 @@ class App extends React.Component {
         <main>
          <div className="content">
            <div className="main">
-             <Filter count={this.state.products.length}>Filter</Filter>
+             <Filter count={this.state.products.length} 
+             size={this.state.size}
+             sort={this.state.sort}
+             filterProducts={this.filterProducts}
+             sortProducts={this.sortProducts}
+             >Filter</Filter>
              <Products products= {this.state.products}></Products>
            </div>
            <div className="sidebar">
